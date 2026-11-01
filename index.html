@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LocalShare</title>
+<style>
+:root{--bg:#f8f9ff;--card:#fff;--ink:#0d1b2a;--mut:#4b5b6b;--line:#d9dfec;--teal:#00696b;--cyan:#00b5d8;--blue:#0057d9;--green:#0a7a4a;--gbg:#c9f5dc;--chip:#e8ecfb}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1420;--card:#161e2d;--ink:#e8edf6;--mut:#9aa8bb;--line:#2a3548;--teal:#4fd1c5;--gbg:#12392b;--green:#6fe3a5;--chip:#222c42}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Manrope,Outfit,system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+header{display:flex;align-items:center;gap:18px;padding:14px 28px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.logo{font-size:24px;font-weight:700;color:var(--teal);display:flex;gap:8px;align-items:center}
+.pill{border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13px;display:inline-flex;gap:8px;align-items:center;background:var(--card)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block}.dot.off{background:#c0392b}
+nav{display:flex;gap:26px;margin:0 auto}nav a{color:var(--mut);padding:6px 0;border-bottom:2px solid transparent}nav a.on{color:var(--teal);border-color:var(--cyan);font-weight:600}
+.av{width:38px;height:38px;border-radius:50%;background:#bfeaf2;color:var(--teal);display:grid;place-items:center;font-weight:700;cursor:pointer}
+main{max-width:1180px;margin:0 auto;padding:28px}
+h1{font-size:40px;letter-spacing:-1px;margin:8px 0 4px}h2{margin:0;font-size:20px}
+.sub{color:var(--mut);margin:0 0 22px}
+.tag{display:inline-block;background:var(--gbg);color:var(--green);font-weight:600;border-radius:99px;padding:4px 12px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:26px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}h1{font-size:30px}nav{order:5;width:100%;justify-content:space-around;margin:0}}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:99px;padding:12px 24px;font-weight:600}
+.btn.teal{background:var(--teal);color:#fff}.btn.o{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn.red{background:transparent;color:#c0392b;border:1px solid #e6a9a2}
+.btn.sm{padding:8px 18px}
+.drop{border:2px dashed var(--cyan);border-radius:28px;padding:40px 24px;text-align:center;cursor:pointer;background:var(--card)}
+.drop.over{background:#e0f7fb}.drop .ic{width:64px;height:64px;border-radius:50%;background:var(--chip);display:grid;place-items:center;margin:0 auto 12px;font-size:28px}
+.row{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0}
+.fi{width:44px;height:44px;border-radius:12px;background:var(--chip);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--teal);flex:none}
+.grow{flex:1;min-width:0}.grow b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mut{color:var(--mut);font-size:13px}
+.x{background:none;border:0;font-size:20px;color:var(--mut)}
+.peer{display:flex;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--line);border-radius:26px;background:var(--card);margin-bottom:12px;position:relative}
+.peer.rec{border:2px solid var(--cyan)}.peer.rec:before{content:"★ RECOMMENDED TARGET";position:absolute;top:-12px;right:30px;background:var(--cyan);color:#fff;font-size:11px;font-weight:700;border-radius:99px;padding:3px 12px}
+.bar{height:8px;background:var(--chip);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--cyan));width:0;transition:width .2s}
+.big{font-size:44px;font-weight:700;color:var(--teal);line-height:1.1}.big small{font-size:16px;color:var(--mut);font-weight:500}
+.stat{display:flex;gap:16px;align-items:center}.stat .big{font-size:36px;color:var(--ink)}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--mut);font-weight:600;font-size:13px;padding:10px 6px}td{padding:12px 6px;border-top:1px solid var(--line)}
+.ok{background:var(--gbg);color:var(--green);border-radius:99px;padding:3px 12px;font-size:13px;font-weight:600}
+.view{display:none}.view.on{display:block}
+.qr{width:150px;height:150px;background:#fff;border-radius:14px;padding:6px}
+.urlbox{display:flex;gap:8px}.urlbox input{flex:1;border:1px solid var(--line);border-radius:99px;padding:10px 16px;background:var(--card);color:var(--ink);font:inherit;min-width:0}
+.sw{width:46px;height:26px;border-radius:99px;background:var(--line);position:relative;border:0;flex:none}.sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.sw.on{background:var(--blue)}.sw.on:after{left:23px}
+.incoming{border:2px solid var(--cyan);box-shadow:0 8px 30px #00b5d822}
+footer{border-top:1px solid var(--line);padding:22px 28px;color:var(--mut);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:14px}
+.bubble{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:99px;display:none;z-index:9}
+</style></head><body>
+<header>
+  <div class="logo">➤ LocalShare</div>
+  <span class="pill"><span class="dot" id="dot"></span><span id="netpill">Connecting…</span></span>
+  <nav id="nav"><a href="#dashboard">Dashboard</a><a href="#send">Send</a><a href="#receive">Receive</a><a href="#history">History</a></nav>
+  <div class="av" id="av" title="Click to rename this device">ME</div>
+</header>
+<main>
+
+<section class="view" id="v-dashboard">
+  <span class="tag">🔒 Local network only</span> <span class="mut">Files never leave your Wi-Fi</span>
+  <h1>Share files between devices, effortlessly.</h1>
+  <p class="sub">Connect to the same Wi-Fi network and transfer files directly through your browser. No installation, no mobile data, no cloud.</p>
+  <div class="card" style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <div><b id="peerCount">0 peers ready</b><div class="mut">Auto-discovery is on</div></div><div class="mut" id="myName"></div></div>
+  <div class="grid2">
+    <div class="card"><h2>Send Files</h2><p class="mut">Share photos, videos, documents and folders with nearby devices on your Wi-Fi.</p>
+      <div class="drop" style="padding:22px" onclick="go('send')"><b>Drop files here, or click to browse</b><div class="mut">No size limit • Multi-file</div></div>
+      <p><button class="btn" onclick="go('send')">Start Sending Files →</button></p></div>
+    <div class="card"><h2>Receive Files</h2><p class="mut">Let another device send files straight to this browser.</p>
+      <div class="peer"><span class="dot"></span><div class="grow"><div class="mut">Broadcasting as</div><b id="myName2"></b></div></div>
+      <p><button class="btn o" onclick="go('receive')">Ready to Receive Files</button></p></div>
+  </div>
+  <div class="grid3" style="margin:24px 0">
+    <div class="card stat"><div><div class="big" id="sFiles">0</div>Files Shared</div></div>
+    <div class="card stat"><div><div class="big" id="sBytes">0 B</div>Total Transferred<div class="mut" id="sSpeed"></div></div></div>
+    <div class="card stat"><div><div class="big">0 KB</div>Cloud / Mobile Data Used<div class="mut" style="color:var(--green)">100% Wi-Fi Peer-to-Peer</div></div></div>
+  </div>
+  <div class="card"><h2>Recent Local Activity</h2><p class="mut">Saved on this device only</p><div style="overflow:auto"><table id="recent"></table></div></div>
+</section>
+
+<section class="view" id="v-send">
+  <span class="tag">⚡ Local Socket Active</span> <span class="mut">Zero internet needed</span>
+  <h1>Send Files &amp; Peer Discovery</h1><p class="sub">Fast browser-to-browser transfer over your Wi-Fi.</p>
+  <div class="grid2" style="align-items:start">
+    <div>
+      <div class="drop" id="drop"><div class="ic">☁</div><b style="font-size:18px">Drag files here, or click to browse</b>
+        <p class="mut">No size quota, no compression, no cloud upload.</p><input type="file" id="pick" multiple hidden></div>
+      <div class="card" style="margin-top:22px;padding:8px 24px"><div style="display:flex;justify-content:space-between;padding:14px 0"><h2>Staged Payload <span class="ok" id="stCount">0</span></h2><span class="mut" id="stReady"></span></div>
+        <div id="staged"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-top:1px solid var(--line);flex-wrap:wrap;gap:8px"><b id="stTotal">No files selected</b>
+          <span><button class="btn o sm" onclick="staged=[];renderStaged()">Clear all</button> <button class="btn sm" onclick="pick.click()">+ Add more files</button></span></div></div>
+    </div>
+    <div>
+      <div class="card" style="padding:18px 24px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center"><div><h2>Discovered Devices on Local Network</h2><span class="mut">Live discovery on this Wi-Fi</span></div><span class="tag" id="found">0 Peers</span></div>
+      <div id="peers"></div>
+      <div class="card" style="margin-top:20px"><h2>Direct Session Share</h2><p class="mut">Device not showing up? Scan the QR or open this address.</p>
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><img class="qr" id="qr1" alt="QR">
+          <div class="grow"><div class="mut">Local Direct URL</div><div class="urlbox"><input id="url1" readonly><button class="btn sm teal" onclick="copy('url1')">Copy</button></div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-transfer">
+  <div class="card" style="padding:16px 24px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="pill">#<span id="tid"></span></span><span class="pill">🔒 Local Wi-Fi only</span><span class="pill"><span class="dot"></span>Direct LAN Socket</span></div>
+  <div class="card" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px">
+    <div class="grow"><b id="fromN"></b><div class="mut" id="fromS"></div></div>
+    <div style="flex:2;min-width:200px;text-align:center"><b id="spd1" style="color:var(--teal)"></b><div class="bar" style="margin:8px 0"><i id="bar0"></i></div><span class="mut">LOW LATENCY • LAN</span></div>
+    <div class="grow" style="text-align:right"><b id="toN"></b><div class="mut" id="toS"></div></div></div>
+  <div class="grid3">
+    <div class="card"><div class="mut">OVERALL PROGRESS</div><div class="big"><span id="pct">0%</span> <small>Completed</small></div><div class="bar" style="margin:14px 0"><i id="bar1"></i></div><div style="display:flex;justify-content:space-between"><span class="mut">Transferred:</span><b id="amt"></b></div></div>
+    <div class="card"><div class="mut">TRANSFER SPEED</div><div class="big"><span id="spd2">0</span> <small>MB/s</small></div><div style="margin:14px 0"><span class="pill">Peak: <b id="peak">0</b> MB/s</span></div><div style="display:flex;justify-content:space-between"><span class="mut">Interface:</span><b style="color:var(--green)">Wi-Fi / LAN</b></div></div>
+    <div class="card"><div class="mut">ESTIMATED TIME</div><div class="big"><span id="eta">–</span></div><p class="mut">Streams chunk by chunk. Nothing is stored on a server.</p><div style="display:flex;justify-content:space-between"><span class="mut">Queue:</span><b id="queue"></b></div></div>
+  </div>
+  <div class="card" style="margin:20px 0"><h2>Payload Queue</h2><div id="xfiles"></div></div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><span class="mut" id="xmsg">Files stream directly between devices without cloud caching.</span><button class="btn red" id="cancelBtn" onclick="cancelX()">Cancel Transfer</button></div>
+</section>
+
+<section class="view" id="v-receive">
+  <span class="mut"><b style="color:var(--teal)">LISTENER ONLINE</b> • Local Socket</span>
+  <h1>Receive Files &amp; Incoming Streams</h1><hr style="border:0;border-top:1px solid var(--line);margin:18px 0 26px">
+  <div class="grid2" style="align-items:start">
+    <div class="card"><h2>Ready to Receive Files</h2><p class="mut">Visible to every device on this Wi-Fi. No account needed.</p>
+      <div style="text-align:center;padding:18px;border:1px solid var(--line);border-radius:18px"><img class="qr" id="qr2" alt="QR" style="width:200px;height:200px"><div class="mut">Scan with a phone camera to connect instantly</div></div>
+      <p class="mut" style="margin-bottom:6px">Direct address</p><div class="urlbox"><input id="url2" readonly><button class="btn sm o" onclick="copy('url2')">Copy Address</button></div>
+      <div class="row" style="margin-top:14px"><div class="grow"><b>Auto-accept all incoming files</b><div class="mut">Skip the confirmation prompt</div></div><button class="sw" id="swAuto"></button></div>
+      <p class="mut">Files are saved to your browser's Downloads folder.</p></div>
+    <div>
+      <div class="card" id="inbox"><h2>No incoming requests</h2><p class="mut">When a nearby device sends you files, the request shows up here.</p></div>
+      <div class="card" style="margin-top:20px;display:flex;justify-content:space-between;align-items:center"><div><h2>Other Devices on this Wi-Fi</h2><span class="mut" id="others"></span></div><button class="btn o sm" onclick="go('send')">View</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-history">
+  <h1>History</h1><p class="sub">Saved on this device only.</p>
+  <div class="card"><div style="overflow:auto"><table id="hist"></table></div><p><button class="btn o sm" onclick="hist=[];saveHist();renderHist()">Clear log</button></p></div>
+</section>
+</main>
+<footer><span><b style="color:var(--teal)">LocalShare</b> • Peer-to-peer file transfer over your own Wi-Fi.</span><span>No cloud • No mobile data</span></footer>
+<div class="bubble" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id), CH=256*1024, enc=new TextEncoder(), dec=new TextDecoder();
+let ws, myId, peers=[], staged=[], hist=JSON.parse(localStorage.ls_hist||'[]'), auto=localStorage.ls_auto==='1', X=null, inbox=null, cancelled=false, info={};
+const ua=navigator.userAgent;
+const type=/iPad|Tablet/.test(ua)?'tablet':/iPhone|Android.*Mobile|Mobile/.test(ua)?'phone':'laptop';
+const guess=(/iPhone/.test(ua)?'iPhone':/iPad/.test(ua)?'iPad':/Android/.test(ua)?'Android':/Mac/.test(ua)?'Mac':/Windows/.test(ua)?'Windows PC':/Linux/.test(ua)?'Linux PC':'Device')+' '+Math.floor(Math.random()*90+10);
+let myName=localStorage.ls_name||guess;
+const icon={phone:'📱',tablet:'📟',laptop:'💻'};
+const fmt=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':b<1073741824?(b/1048576).toFixed(1)+' MB':(b/1073741824).toFixed(2)+' GB';
+const ext=n=>(n.split('.').pop()||'FILE').slice(0,4).toUpperCase();
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3000)}
+function copy(id){const e=$(id);e.select();navigator.clipboard?navigator.clipboard.writeText(e.value):document.execCommand('copy');toast('Address copied')}
+function saveHist(){localStorage.ls_hist=JSON.stringify(hist.slice(0,200))}
+
+/* routing */
+function go(v){location.hash=v}
+function route(){let v=location.hash.slice(1)||'dashboard';if(!$('v-'+v))v='dashboard';
+  document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+v||(v==='transfer'&&a.hash==='#send')));
+  if(v==='history')renderHist();scrollTo(0,0)}
+addEventListener('hashchange',route);
+
+/* connection */
+function connect(){
+  if(location.protocol==='file:'){$('dot').className='dot off';$('netpill').textContent='Open the server address, not this file';toast('Run "npm start" and open the http://… address it prints');return}
+  ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);ws.binaryType='arraybuffer';
+  ws.onopen=()=>{ws.send(JSON.stringify({t:'hello',name:myName,type}));$('dot').className='dot'};
+  ws.onclose=()=>{$('dot').className='dot off';$('netpill').textContent='Disconnected, retrying…';setTimeout(connect,1500)};
+  ws.onmessage=e=>e.data instanceof ArrayBuffer?onChunk(e.data):onMsg(JSON.parse(e.data));
+}
+function onMsg(m){
+  if(m.t==='hi')myId=m.id;
+  else if(m.t==='peers'){peers=m.peers.filter(p=>p.id!==myId);renderPeers()}
+  else if(m.t==='offer')onOffer(m);
+  else if(m.t==='accept'&&X&&X.tid===m.tid)runSend();
+  else if(m.t==='decline'&&X&&X.tid===m.tid){toast('Transfer declined');X=null;go('send')}
+  else if(m.t==='cancel'&&X&&X.tid===m.tid){toast('Transfer cancelled by the other device');cancelled=true;finish(false)}
+  else if(m.t==='fileend'&&X&&X.dir==='in')saveFile(m.i);
+  else if(m.t==='done'&&X&&X.dir==='in')finish(true);
+}
+
+/* peers + staged UI */
+function renderPeers(){
+  $('found').textContent=peers.length+' Peer'+(peers.length==1?'':'s');
+  $('peerCount').textContent=peers.length+' peer'+(peers.length==1?'':'s')+' ready';
+  $('others').textContent=peers.length+' device'+(peers.length==1?'':'s')+' online';
+  $('peers').innerHTML=peers.length?peers.map((p,i)=>`<div class="peer ${i==0?'rec':''}"><div class="fi" style="font-size:22px">${icon[p.type]||'💻'}</div>
+    <div class="grow"><b>${esc(p.name)}</b><div class="mut">${p.type} • ${p.ip}</div></div>
+    <button class="btn ${i==0?'':'o'} sm" onclick="sendTo('${p.id}')">${i==0?'Send to this Device →':'Send ▷'}</button></div>`).join('')
+    :'<div class="card mut" style="text-align:center">No other devices yet. Open this site\'s address on another device that is on the same Wi-Fi.</div>';
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderStaged(){
+  $('stCount').textContent=staged.length;$('stReady').textContent=staged.length?'✓ Ready to send':'';
+  $('staged').innerHTML=staged.map((f,i)=>`<div class="row"><div class="fi">${ext(f.name)}</div><div class="grow"><b>${esc(f.name)}</b><div class="mut">${fmt(f.size)} • Ready</div></div><button class="x" onclick="staged.splice(${i},1);renderStaged()">×</button></div>`).join('');
+  $('stTotal').textContent=staged.length?`${staged.length} file${staged.length>1?'s':''} selected • ${fmt(staged.reduce((a,f)=>a+f.size,0))} total`:'No files selected';
+}
+const drop=$('drop'),pick=$('pick');
+drop.onclick=()=>pick.click();pick.onchange=()=>{staged.push(...pick.files);pick.value='';renderStaged()};
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>{staged.push(...[...e.dataTransfer.files].filter(f=>f.size||f.type));renderStaged()});
+
+/* sending */
+function sendTo(id){
+  if(!staged.length)return toast('Add some files first');
+  if(X)return toast('A transfer is already running');
+  const p=peers.find(p=>p.id===id);if(!p)return;
+  const tid=Math.random().toString(36).slice(2,10).padEnd(8,'0');cancelled=false;
+  X={dir:'out',tid,peer:p,files:staged.map(f=>({name:f.name,size:f.size,done:0,st:'Queued'})),total:staged.reduce((a,f)=>a+f.size,0),sent:0,t0:0,peak:0,waiting:true};
+  ws.send(JSON.stringify({t:'offer',to:id,tid,files:X.files.map(f=>({name:f.name,size:f.size}))}));
+  renderX();go('transfer');$('xmsg').textContent='Waiting for '+p.name+' to accept…';
+}
+async function runSend(){
+  X.waiting=false;X.t0=performance.now();const files=[...staged];$('xmsg').textContent='Streaming over Wi-Fi…';
+  for(let i=0;i<files.length&&!cancelled;i++){
+    X.files[i].st='Sending';
+    for(let off=0;off<files[i].size&&!cancelled;off+=CH){
+      while(ws.bufferedAmount>4e6&&!cancelled)await sleep(8);
+      const buf=await files[i].slice(off,off+CH).arrayBuffer();
+      const out=new Uint8Array(12+buf.byteLength);out.set(enc.encode(X.tid));new DataView(out.buffer).setUint32(8,i);out.set(new Uint8Array(buf),12);
+      ws.send(out);X.files[i].done+=buf.byteLength;X.sent+=buf.byteLength;tick();
+    }
+    if(cancelled)return;
+    X.files[i].st='Done';ws.send(JSON.stringify({t:'fileend',tid:X.tid,i}));renderX();
+  }
+  if(!cancelled){while(ws.bufferedAmount>0)await sleep(20);ws.send(JSON.stringify({t:'done',tid:X.tid}));finish(true)}
+}
+
+/* receiving */
+function onOffer(m){
+  const from=peers.find(p=>p.id===m.from)||{name:'Unknown device',ip:'',type:'laptop'};
+  if(X||inbox){ws.send(JSON.stringify({t:'decline',tid:m.tid}));return}
+  inbox={...m,from};renderInbox();
+  if(auto)acceptIn();else{if(!location.hash.includes('receive'))go('receive');toast(from.name+' wants to send you files')}
+}
+function renderInbox(){
+  if(!inbox){$('inbox').className='card';$('inbox').innerHTML='<h2>No incoming requests</h2><p class="mut">When a nearby device sends you files, the request shows up here.</p>';return}
+  const tot=inbox.files.reduce((a,f)=>a+f.size,0);$('inbox').className='card incoming';
+  $('inbox').innerHTML=`<h2 style="color:var(--blue)">● Incoming Transfer Request!</h2>
+   <div class="peer" style="margin:16px 0"><div class="fi" style="font-size:22px">${icon[inbox.from.type]||'💻'}</div><div class="grow"><b>${esc(inbox.from.name)}</b><div class="mut">${inbox.from.ip} • Verified Wi-Fi neighbour</div></div></div>
+   <div style="display:flex;justify-content:space-between"><b>Payload Queue</b><span class="ok">${inbox.files.length} Files (${fmt(tot)})</span></div>
+   ${inbox.files.map(f=>`<div class="row"><div class="fi">${ext(f.name)}</div><div class="grow"><b>${esc(f.name)}</b><div class="mut">${fmt(f.size)}</div></div></div>`).join('')}
+   <div style="display:flex;gap:12px;margin-top:10px"><button class="btn" style="flex:1" onclick="acceptIn()">⬇ Accept &amp; Stream Files</button><button class="btn o" onclick="declineIn()">Decline</button></div>`;
+}
+function acceptIn(){
+  cancelled=false;X={dir:'in',tid:inbox.tid,peer:inbox.from,files:inbox.files.map(f=>({name:f.name,size:f.size,done:0,st:'Queued',chunks:[]})),total:inbox.files.reduce((a,f)=>a+f.size,0),sent:0,t0:performance.now(),peak:0};
+  ws.send(JSON.stringify({t:'accept',tid:inbox.tid}));inbox=null;renderInbox();renderX();go('transfer');$('xmsg').textContent='Receiving over Wi-Fi…';
+}
+function declineIn(){ws.send(JSON.stringify({t:'decline',tid:inbox.tid}));inbox=null;renderInbox()}
+function onChunk(ab){
+  if(!X||X.dir!=='in')return;const i=new DataView(ab).getUint32(8),f=X.files[i];if(!f)return;
+  f.chunks.push(ab.slice(12));f.done+=ab.byteLength-12;X.sent+=ab.byteLength-12;f.st='Receiving';tick();
+}
+function saveFile(i){
+  const f=X.files[i];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(f.chunks));a.download=f.name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);f.chunks=[];f.st='Done';renderX();
+}
+
+/* transfer view */
+let lastT=0,lastB=0;
+function tick(){const now=performance.now();if(now-lastT<150)return;const spd=(X.sent-lastB)/1048576/((now-lastT)/1000||1);lastT=now;lastB=X.sent;X.speed=spd;X.peak=Math.max(X.peak,spd);renderX()}
+function renderX(){
+  if(!X)return;const pct=X.total?Math.floor(X.sent/X.total*100):0,spd=(X.speed||0),done=X.files.filter(f=>f.st==='Done').length;
+  const me=`${esc(myName)}`,them=esc(X.peer.name);
+  $('tid').textContent='P2P-'+X.tid.slice(0,4).toUpperCase();
+  $('fromN').textContent=X.dir==='out'?'This Device (Host)':X.peer.name;$('toN').textContent=X.dir==='out'?X.peer.name:'This Device';
+  $('fromS').textContent=X.dir==='out'?myName:X.peer.ip;$('toS').textContent=X.dir==='out'?X.peer.ip:myName;
+  $('spd1').textContent=spd.toFixed(1)+' MB/s';$('spd2').textContent=spd.toFixed(1);$('peak').textContent=X.peak.toFixed(1);
+  $('pct').textContent=pct+'%';$('bar0').style.width=$('bar1').style.width=pct+'%';
+  $('amt').textContent=fmt(X.sent)+' / '+fmt(X.total);$('queue').textContent=done+' of '+X.files.length+' Files Finished';
+  const rem=X.total-X.sent;$('eta').textContent=spd>0.01&&rem>0?(rem/1048576/spd<90?'~'+Math.ceil(rem/1048576/spd)+' s':'~'+Math.ceil(rem/1048576/spd/60)+' min'):(rem<=0?'Done':'–');
+  $('xfiles').innerHTML=X.files.map(f=>{const p=f.size?Math.floor(f.done/f.size*100):100;return `<div class="row"><div class="fi">${ext(f.name)}</div><div class="grow"><b>${esc(f.name)}</b><div class="bar" style="margin-top:8px"><i style="width:${p}%"></i></div></div><div style="text-align:right;min-width:110px"><div class="mut">${fmt(f.done)} / ${fmt(f.size)}</div><span class="${f.st==='Done'?'ok':'mut'}">${f.st==='Done'?'✓ 100%':f.st+' '+p+'%'}</span></div></div>`}).join('');
+}
+function cancelX(){if(!X)return go('send');cancelled=true;ws.send(JSON.stringify({t:'cancel',tid:X.tid}));finish(false)}
+function finish(ok){
+  const x=X;X=null;renderPeers();
+  if(ok){const secs=(performance.now()-x.t0)/1000||1;x.files.forEach(f=>hist.unshift({name:f.name,size:f.size,dir:x.dir,peer:x.peer.name,speed:(f.size/1048576/secs),ts:Date.now()}));saveHist();toast('Transfer complete ✓');if(x.dir==='out')staged=[];renderStaged()}
+  else toast('Transfer stopped');
+  go(x.dir==='in'?'receive':'send');renderStats();
+}
+
+/* history + stats */
+function ago(t){const s=(Date.now()-t)/1000;return s<60?'Just now':s<3600?Math.floor(s/60)+' mins ago':s<86400?Math.floor(s/3600)+' hrs ago':new Date(t).toLocaleDateString()}
+const rowsHtml=l=>'<tr><th>File</th><th>Direction / Device</th><th>Size</th><th>Speed</th><th>When</th><th>Status</th></tr>'+(l.length?l.map(h=>`<tr><td><span class="fi" style="display:inline-grid;width:auto;padding:4px 8px;height:auto;margin-right:8px">${ext(h.name)}</span>${esc(h.name)}</td><td>${h.dir==='out'?'↑ Sent to ':'↓ From '}${esc(h.peer)}</td><td>${fmt(h.size)}</td><td style="color:var(--green)">${h.speed.toFixed(1)} MB/s</td><td class="mut">${ago(h.ts)}</td><td><span class="ok">✓ Completed</span></td></tr>`).join(''):'<tr><td colspan="6" class="mut">No transfers yet.</td></tr>');
+function renderHist(){$('hist').innerHTML=rowsHtml(hist)}
+function renderStats(){
+  $('recent').innerHTML=rowsHtml(hist.slice(0,4));$('sFiles').textContent=hist.length;$('sBytes').textContent=fmt(hist.reduce((a,h)=>a+h.size,0));
+  $('sSpeed').textContent=hist.length?'Avg speed '+(hist.reduce((a,h)=>a+h.speed,0)/hist.length).toFixed(1)+' MB/s':'';
+}
+function setName(){$('av').textContent=myName.slice(0,2).toUpperCase();$('myName').textContent=myName;$('myName2').textContent=myName}
+$('av').onclick=()=>{const n=prompt('Name this device',myName);if(n&&n.trim()){myName=n.trim().slice(0,40);localStorage.ls_name=myName;setName();ws.send(JSON.stringify({t:'hello',name:myName,type}))}};
+$('swAuto').className='sw'+(auto?' on':'');$('swAuto').onclick=()=>{auto=!auto;localStorage.ls_auto=auto?'1':'0';$('swAuto').classList.toggle('on',auto)};
+
+/* init */
+fetch('/api/info').then(r=>r.json()).then(i=>{info=i;$('netpill').textContent='Wi-Fi LAN Direct • '+location.hostname;
+  for(const n of ['1','2']){$('url'+n).value=i.url;$('qr'+n).src='/qr.svg?t='+encodeURIComponent(i.url)}});
+setName();renderStaged();renderPeers();renderStats();route();connect();
+addEventListener('beforeunload',e=>{if(X){e.preventDefault();e.returnValue=''}});
+</script></body></html>

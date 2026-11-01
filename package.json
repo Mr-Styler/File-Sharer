@@ -1,0 +1,17 @@
+{
+  "name": "localshare",
+  "version": "1.0.0",
+  "description": "Wi-Fi / LAN file sharing in the browser. No internet or mobile data needed.",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "qrcode": "^1.5.3",
+    "ws": "^8.17.0"
+  }
+}
